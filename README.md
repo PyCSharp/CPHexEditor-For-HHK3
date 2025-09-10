@@ -8,7 +8,7 @@
 </p>
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/PyCSharp/HexEditor-For-HHK3/refs/heads/main/image.jpg" alt="CPHexEditor Preview">
+  <img src="https://raw.githubusercontent.com/PyCSharp/HexEditor-For-HHK3/refs/heads/main/image.png" alt="CPHexEditor Preview">
 </p>
 
 ---
