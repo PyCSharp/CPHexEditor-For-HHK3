@@ -1,25 +1,49 @@
-# HHK3template
-A modern template for HHK3!
+<h4 align="center">A Ping Pong game for the Casio FX-CP400 with HollyHock-3</h4>
 
-Checkout the other branches for more variants.
+<p align="center">
+  <a href="#how-to-use">How To Use</a> •
+  <a href="#download">Download</a> •
+  <a href="#credits">Credits</a> •
+  <a href="#community">Community</a>
+</p>
 
-## How to Setup
-1. Clone to project
-2. Enter the devcontainer
-3. `make compile_commands.json` or use the vscode task
-4. Restart clangd (eg. via CRTL+SHIFT+P in vscode)
+<p align="center">
+  <img src="https://raw.githubusercontent.com/PyCSharp/CPPong-For-HHK3/refs/heads/main/image.jpg" alt="CPPong Preview">
+</p>
 
-## How to build
-```sh
-make -j
-```
-Or execute the default vscode build task with CRTL+SHIFT+B
+---
 
-## How to run
-Copy `dist/CPapp.hh3` to the root of the calculator when connected in usb storage mode and then select and run from the launcher.
+## How To Use
 
-## How to change the file name (recommended)
-Open the Makefile and adjust this line to what you want:
-```Makefile
-APP_ELF := $(OUTDIR)/<your_file_name>.elf
-```
+1. Copy the `.hh3` game file into the **root directory** of your calculator  
+   (do not place it inside a subfolder).  
+
+2. Launch the calculator and open the game through Hollyhock Launcher.  
+
+3. Controls:  
+   - Player 1: `←` / `→`  
+   - Player 2: `1` / `3`  
+   - `5` = restart game  
+   - `EXE` or `Clear` = quit  
+
+---
+
+## Download
+
+👉 [Download the latest release here](https://github.com/PyCSharp/CPPong-For-HHK3/releases)  
+
+The release contains the `.hh3` file you just need to copy onto your calculator.  
+
+---
+
+## Credits
+
+- [Original Code for HHK2](https://github.com/SnailMath/CPpong) by **SnailMath**
+- [HHK3 Template](https://github.com/QBos07/HHK3template) by **QBos07**
+
+---
+
+## Community
+
+Join the discussion, share feedback and get help on the Snail Math Discord Server:  
+👉 [https://discord.com/invite/knpcNJTzpd](https://discord.com/invite/knpcNJTzpd)
