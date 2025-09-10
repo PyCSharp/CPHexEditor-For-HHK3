@@ -1,4 +1,4 @@
-<h4 align="center">A Ping Pong game for the Casio FX-CP400 with HollyHock-3</h4>
+<h4 align="center">A Hex Editor for the Casio FX-CP400 with HollyHock-3</h4>
 
 <p align="center">
   <a href="#how-to-use">How To Use</a> •
@@ -15,24 +15,24 @@
 
 ## How To Use
 
-1. Copy the `.hh3` game file into the **root directory** of your calculator  
-   (do not place it inside a subfolder).  
+1. Copy the `.hh3` file into the **root directory** of your calculator  
+   (do not place it inside a subfolder).
 
-2. Launch the calculator and open the game through Hollyhock Launcher.  
+2. Launch the calculator and open the Hex Editor through Hollyhock Launcher.  
 
 3. Controls:  
-   - Player 1: `←` / `→`  
-   - Player 2: `1` / `3`  
+   - Cursor: `←` / `→`  
+   - A, B, C, D, E, F: `=` / `3` / `𝒙` / `𝒚` / `𝒛` / `^` / `÷`
    - `5` = restart game  
-   - `EXE` or `Clear` = quit  
+   - `Clear` = quit  
 
 ---
 
 ## Download
 
-👉 [Download the latest release here](https://github.com/PyCSharp/CPPong-For-HHK3/releases)  
+👉 [Download the latest release here](https://github.com/PyCSharp/HexEditor-For-HHK3/releases)
 
-The release contains the `.hh3` file you just need to copy onto your calculator.  
+The release contains the `.hh3` file you just need to copy onto your calculator.
 
 ---
 
