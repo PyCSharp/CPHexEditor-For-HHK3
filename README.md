@@ -23,7 +23,6 @@
 3. Controls:  
    - Cursor: `←` / `→`  
    - A, B, C, D, E, F: `=` / `3` / `𝒙` / `𝒚` / `𝒛` / `^` / `÷`
-   - `5` = restart game  
    - `Clear` = quit  
 
 ---
@@ -38,7 +37,7 @@ The release contains the `.hh3` file you just need to copy onto your calculator.
 
 ## Credits
 
-- [Original Code for HHK2](https://github.com/SnailMath/CPpong) by **SnailMath**
+- [Original Code for HHK2](https://github.com/SnailMath/CPhexEditor) by **SnailMath**
 - [HHK3 Template](https://github.com/QBos07/HHK3template) by **QBos07**
 
 ---
