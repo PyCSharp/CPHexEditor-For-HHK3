@@ -25,6 +25,13 @@
    - A, B, C, D, E, F: `=` / `3` / `𝒙` / `𝒚` / `𝒛` / `^` / `÷`
    - `Clear` = quit  
 
+4. Dumping memory:  
+   - Navigate to the **start address** (use the arrows top right).  
+   - Press `EXP` → sets **start**.  
+   - Navigate to the **end address**.  
+   - Press `EXP` again → sets **end**.  
+   - Press `EXE` → dumps memory from *start* to *end*.  
+
 ---
 
 ## Download
