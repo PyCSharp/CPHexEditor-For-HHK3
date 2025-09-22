@@ -1,13 +1,18 @@
 #include <appdef.h>
 #include <cstdint>
+#include <cstdio>
+#include <cstring>
 #include <sdk/os/debug.h>
 #include <sdk/os/input.h>
 #include <sdk/os/lcd.h>
 #include <sdk/os/mem.h>
 #include <sys/_intsup.h>
+#include <sdk/os/file.h>
+#include <sys/_types.h>
+#include <unistd.h>
 
 APP_NAME("HexEditor")
-APP_DESCRIPTION("A simple hex editor. Can read and write byte, word and long. github.com/PyCSharp/HexEditor-For-HHK3")
+APP_DESCRIPTION("A simple hex editor. Can read and write byte, word and long. github.com/PyCSharp/CPHexEditor-For-HHK3")
 APP_AUTHOR("SnailMath, PyCSharp")
 APP_VERSION("1.0.0")
 
@@ -44,7 +49,73 @@ uint8_t *memory = (uint8_t*)0x808fcba0;
 char cursorx = 2;
 char cursory = 2;
 
+static uintptr_t start = 0x00000000;
+static uintptr_t end = 0x00000000;
+
+static inline unsigned int save_sr(void) {
+  unsigned int sr;
+  __asm__ volatile("stc sr, %0" : "=r"(sr));
+  return sr;
+}
+
+static inline void write_sr(unsigned int sr) {
+  __asm__ volatile("ldc %0, sr" : : "r"(sr));
+}
+
+void setDumpAddresses()
+{
+    if (start == 0) 
+    {
+        start = (uintptr_t)memory;
+    } 
+    else 
+    {
+        end = (uintptr_t)memory;
+    }
+}
+
+void writeHexDumpToFile() 
+{
+    File_Remove("\\fls0\\dump.dmp");
+
+    unsigned int sr = save_sr();
+
+    uintptr_t startMemoryAddress = start;
+    uintptr_t endMemoryAddress = end;
+    write_sr(0x100000F0 | sr);
+
+    int fd = File_Open("\\fls0\\dump.dmp", FILE_OPEN_WRITE | FILE_OPEN_CREATE | FILE_OPEN_APPEND);
+    
+    char hexDumpTableHeader[57] = "Offset:\t00 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F\n";
+
+    auto _ = File_Write(fd, hexDumpTableHeader, sizeof(hexDumpTableHeader) - 1);
+
+    char hexTextBuffer[4];
+    char addressTextBuffer[32];
+
+    for (uintptr_t addr = startMemoryAddress; addr <= endMemoryAddress; addr+=16) {
+        int len = snprintf(addressTextBuffer, sizeof(addressTextBuffer), "%08zx", addr);
+        [[maybe_unused]] auto f = File_Write(fd, addressTextBuffer, len);
+
+        for (uintptr_t offset = 0; offset < 16; offset++) {
+            uintptr_t currentAddr = addr + offset;
+            if (currentAddr > endMemoryAddress) break;
+
+            snprintf(hexTextBuffer, sizeof(hexTextBuffer), " %02X", *reinterpret_cast<uint8_t*>(currentAddr));
+            [[maybe_unused]] auto f = File_Write(fd, hexTextBuffer, strlen(hexTextBuffer));
+        }
+
+        [[maybe_unused]] auto f4 = File_Write(fd, "\r\n", 2);
+    }
+
+    start = (uintptr_t)0x00000000;
+    end = (uintptr_t)0x00000000;                                                                                                                                                                                                                                   
+    File_Close(fd);
+}
+
 int main() {
+
+
     LCD_GetSize(&width, &height);
     vram = LCD_GetVRAMAddress();
 
@@ -75,13 +146,15 @@ int main() {
                     ch = event.data.key.keyCode + ('0' - KEYCODE_0);
                     typed = true;
                 }
+
+                if (event.data.key.keyCode == KEYCODE_EXE) writeHexDumpToFile();
                 if (event.data.key.keyCode == KEYCODE_EQUALS) ch = 'A', typed = true;
                 if (event.data.key.keyCode == KEYCODE_X) ch = 'B', typed = true;
                 if (event.data.key.keyCode == KEYCODE_Y) ch = 'C', typed = true;
                 if (event.data.key.keyCode == KEYCODE_Z) ch = 'D', typed = true;
                 if (event.data.key.keyCode == KEYCODE_POWER) ch = 'E', typed = true;
                 if (event.data.key.keyCode == KEYCODE_DIVIDE) ch = 'F', typed = true;
-
+                if (event.data.key.keyCode == KEYCODE_EXP) setDumpAddresses();
                 if (event.data.key.keyCode == KEYCODE_RIGHT) cursorx++;
                 if (event.data.key.keyCode == KEYCODE_LEFT) cursorx--;
                 if (event.data.key.keyCode == KEYCODE_DOWN) cursory++;
@@ -95,13 +168,18 @@ int main() {
                 if (typed) {
                     if (inputpos <= MAXinput) {
                         input[inputpos++] = ch;
-                        input[inputpos] = '_';
+                        input[inputpos] = '\0';
                         input[inputpos + 1] = 0;
                         if (inputpos == (MAXinput + 1)) input[inputpos] = 0;
                     }
                 }
 
-                if (event.data.key.keyCode == KEYCODE_POWER_CLEAR) running = false;
+                if (event.data.key.keyCode == KEYCODE_POWER_CLEAR)
+                {
+                    searchdirection = 0;
+                    running = false;
+                    continue;
+                }
 
                 if (event.data.key.keyCode == KEYCODE_BACKSPACE) {
                     if (inputpos > 1) {
@@ -306,6 +384,8 @@ void initscreen() {
 }
 
 void hexdump() {
+    if (!memory) return;
+
     for (int i = 0; i < 16; i++) {
         Debug_Printf(1, 5 + (2 * i), false, 0,
                      "%X %02X %02X %02X %02X  %02X %02X %02X %02X  %c%c%c%c %c%c%c%c", i,
