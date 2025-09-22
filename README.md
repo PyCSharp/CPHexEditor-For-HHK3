@@ -30,7 +30,12 @@
    - Press `EXP` → sets **start**.  
    - Navigate to the **end address**.  
    - Press `EXP` again → sets **end**.  
-   - Press `EXE` → dumps memory from *start* to *end*.  
+   - Press `EXE` → dumps memory from *start* to *end*.
+  
+⚠️ **Notes:**  
+   - Do **not select very large ranges**, as dumping too much memory at once can take a long time or fail.  
+   - During the dump process, the calculator will **freeze temporarily** — this is normal.  
+   - Once the dump is complete, a file named **`dump.dmp`** will appear in the calculator’s root directory.  
 
 ---
 
