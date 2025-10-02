@@ -22,20 +22,29 @@
 
 3. Controls:  
    - Cursor: `←` / `→`  
-   - A, B, C, D, E, F: `=` / `𝒙` / `𝒚` / `𝒛` / `^` / `÷`
+   - A, B, C, D, E, F: `=` / `𝒙` / `𝒚` / `𝒛` / `^` / `÷`  
    - `Clear` = quit  
 
-4. Dumping memory:  
+4. **Dumping memory:**  
    - Navigate to the **start address** (use the arrows top right).  
    - Press `EXP` → sets **start**.  
    - Navigate to the **end address**.  
    - Press `EXP` again → sets **end**.  
-   - Press `EXE` → dumps memory from *start* to *end*.
-  
-⚠️ **Notes:**  
+   - Press `EXE` → dumps memory from *start* to *end*.  
+
+   ⚠️ **Notes:**  
    - Do **not select very large ranges**, as dumping too much memory at once can take a long time or fail.  
    - During the dump process, the calculator will **freeze temporarily** — this is normal.  
    - Once the dump is complete, a file named **`dump.dmp`** will appear in the calculator’s root directory.  
+
+5. **Searching memory:**  
+   - Enter your search pattern in hex (e.g. `>48656C6C6F` for `"Hello"`).  
+   - Press `(-)` (negative key) to start searching.  
+   - Results are shown **directly on the screen** *and* written to **`FoundAddresses.txt`** in the root directory.  
+
+   📌 **Range of search:**  
+   - If you **set start & end** with `EXP` → only that range is searched.  
+   - If you **do not set any range** → the **entire memory area** is searched.  
 
 ---
 
@@ -57,4 +66,4 @@ The release contains the `.hh3` file you just need to copy onto your calculator.
 ## Community
 
 Join the discussion, share feedback and get help on the Snail Math Discord Server:  
-👉 [https://discord.com/invite/knpcNJTzpd](https://discord.com/invite/knpcNJTzpd)
+👉 [https://discord.com/invite/knpcNJTzpd](https://discord.com/invite/knpcNJTzpd)  
