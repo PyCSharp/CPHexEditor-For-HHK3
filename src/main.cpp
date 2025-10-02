@@ -144,9 +144,11 @@ void writeHexDumpToFile()
 
 void searchForText() 
 {
+    File_Remove("\\fls0\\FoundAddresses.txt");
+
     unsigned int sr = save_sr();
     write_sr(0x100000F0 | sr);
-    int fd = File_Open("\\fls0\\FoundAddresses.txt", FILE_OPEN_CREATE | FILE_OPEN_WRITE);
+    int fd = File_Open("\\fls0\\FoundAddresses.txt", FILE_OPEN_CREATE | FILE_OPEN_WRITE | FILE_OPEN_APPEND);
 
     char buffer[33];
     char addressTextBuffer[32];
@@ -182,7 +184,10 @@ void searchForText()
     }
 
     start = (uintptr_t)0x00000000;
-    end = (uintptr_t)0x00000000; 
+    end = (uintptr_t)0x00000000;
+
+    File_Close(fd);
+    write_sr(sr);
 }
 
 int main() {
