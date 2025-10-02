@@ -1,4 +1,5 @@
 #include <appdef.h>
+#include <cctype>
 #include <cstdint>
 #include <cstdio>
 #include <cstring>
@@ -9,6 +10,7 @@
 #include <sys/_intsup.h>
 #include <sdk/os/file.h>
 #include <sys/_types.h>
+#include <sys/unistd.h>
 #include <unistd.h>
 
 APP_NAME("HexEditor")
@@ -62,6 +64,33 @@ static inline void write_sr(unsigned int sr) {
   __asm__ volatile("ldc %0, sr" : : "r"(sr));
 }
 
+inline uint8_t hexCharToByte(char c) {
+    if (c >= '0' && c <= '9') return c - '0';
+    if (c >= 'A' && c <= 'F') return c - 'A' + 10;
+    if (c >= 'a' && c <= 'f') return c - 'a' + 10;
+    return 0; 
+}
+
+size_t hexInputToText(const char* input, uint8_t* output, size_t maxOutputLen) {
+    if (!input || !output) return 0;
+
+    size_t i = 0; 
+    size_t outPos = 0;
+
+    if (input[0] == '>') i = 1;
+
+    while (input[i] && input[i+1] && outPos < maxOutputLen) {
+        if (!isxdigit(input[i]) || !isxdigit(input[i+1])) break;
+
+        uint8_t high = hexCharToByte(input[i]);
+        uint8_t low  = hexCharToByte(input[i+1]);
+        output[outPos++] = (high << 4) | low;
+        i += 2;
+    }
+
+    return outPos;
+}
+
 void setDumpAddresses()
 {
     if (start == 0) 
@@ -113,9 +142,50 @@ void writeHexDumpToFile()
     File_Close(fd);
 }
 
+void searchForText() 
+{
+    unsigned int sr = save_sr();
+    write_sr(0x100000F0 | sr);
+    int fd = File_Open("\\fls0\\FoundAddresses.txt", FILE_OPEN_CREATE | FILE_OPEN_WRITE);
+
+    char buffer[33];
+    char addressTextBuffer[32];
+    uint8_t text[32];
+
+    size_t len = hexInputToText(input, text, sizeof(text));
+    for (size_t i = 0; i < len; i++) buffer[i] = text[i];
+    buffer[len] = '\0';
+
+    std::printf("Searching for: %s\n", buffer);
+    std::fflush(stdout);
+    Debug_WaitKey();
+
+    for (uintptr_t addr = start; addr <= end - len + 1; addr++) 
+    {
+        int addrLen = snprintf(addressTextBuffer, sizeof(addressTextBuffer), "%08zx\r\n", addr);
+
+        size_t match = 0;
+        for (; match < len; match++) 
+        {
+            if (*(char*)(addr + match) != buffer[match])
+                break;
+        }
+        if (match == len) 
+        {
+            auto _ = File_Write(fd, addressTextBuffer, addrLen);
+
+            std::printf("Found at: 0x%08zx\n", addr);
+            std::fflush(stdout);
+            Debug_WaitKey();
+            addr += match - 1;
+        }
+    }
+
+    start = (uintptr_t)0x00000000;
+    end = (uintptr_t)0x00000000; 
+}
+
 int main() {
-
-
     LCD_GetSize(&width, &height);
     vram = LCD_GetVRAMAddress();
 
@@ -148,13 +218,14 @@ int main() {
                 }
 
                 if (event.data.key.keyCode == KEYCODE_EXE) writeHexDumpToFile();
+                if (event.data.key.keyCode == KEYCODE_EXP) setDumpAddresses();
+                if (event.data.key.keyCode == KEYCODE_NEGATIVE) searchForText();
                 if (event.data.key.keyCode == KEYCODE_EQUALS) ch = 'A', typed = true;
                 if (event.data.key.keyCode == KEYCODE_X) ch = 'B', typed = true;
                 if (event.data.key.keyCode == KEYCODE_Y) ch = 'C', typed = true;
                 if (event.data.key.keyCode == KEYCODE_Z) ch = 'D', typed = true;
                 if (event.data.key.keyCode == KEYCODE_POWER) ch = 'E', typed = true;
                 if (event.data.key.keyCode == KEYCODE_DIVIDE) ch = 'F', typed = true;
-                if (event.data.key.keyCode == KEYCODE_EXP) setDumpAddresses();
                 if (event.data.key.keyCode == KEYCODE_RIGHT) cursorx++;
                 if (event.data.key.keyCode == KEYCODE_LEFT) cursorx--;
                 if (event.data.key.keyCode == KEYCODE_DOWN) cursory++;
