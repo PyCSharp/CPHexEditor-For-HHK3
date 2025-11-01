@@ -114,27 +114,9 @@ void writeHexDumpToFile()
     write_sr(0x100000F0 | sr);
 
     int fd = File_Open("\\fls0\\dump.dmp", FILE_OPEN_WRITE | FILE_OPEN_CREATE | FILE_OPEN_APPEND);
-    
-    char hexDumpTableHeader[57] = "Offset:\t00 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F\n";
 
-    auto _ = File_Write(fd, hexDumpTableHeader, sizeof(hexDumpTableHeader) - 1);
-
-    char hexTextBuffer[4];
-    char addressTextBuffer[32];
-
-    for (uintptr_t addr = startMemoryAddress; addr <= endMemoryAddress; addr+=16) {
-        int len = snprintf(addressTextBuffer, sizeof(addressTextBuffer), "%08zx", addr);
-        [[maybe_unused]] auto f = File_Write(fd, addressTextBuffer, len);
-
-        for (uintptr_t offset = 0; offset < 16; offset++) {
-            uintptr_t currentAddr = addr + offset;
-            if (currentAddr > endMemoryAddress) break;
-
-            snprintf(hexTextBuffer, sizeof(hexTextBuffer), " %02X", *reinterpret_cast<uint8_t*>(currentAddr));
-            [[maybe_unused]] auto f = File_Write(fd, hexTextBuffer, strlen(hexTextBuffer));
-        }
-
-        [[maybe_unused]] auto f4 = File_Write(fd, "\r\n", 2);
+    for (uintptr_t addr = startMemoryAddress; addr <= endMemoryAddress; addr++) {
+        auto _ = File_Write(fd, (char*)addr, 1);
     }
 
     start = (uintptr_t)0x00000000;
