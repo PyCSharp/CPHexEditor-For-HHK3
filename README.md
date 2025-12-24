@@ -32,7 +32,7 @@
    - Press `EXP` again → sets **end**.  
    - Press `EXE` → dumps memory from *start* to *end*.  
 
-   ⚠️ **Notes:**  
+   **Notes:**  
    - Do **not select very large ranges**, as dumping too much memory at once can take a long time or fail.  
    - During the dump process, the calculator will **freeze temporarily** — this is normal.  
    - Once the dump is complete, a file named **`dump.dmp`** will appear in the calculator’s root directory.  
@@ -42,7 +42,7 @@
    - Press `(-)` (negative key) to start searching.  
    - Results are shown **directly on the screen** *and* written to **`FoundAddresses.txt`** in the root directory.  
 
-   📌 **Range of search:**  
+   **Range of search:**  
    - If you **set start & end** with `EXP` → only that range is searched.  
    - If you **do not set any range** → the **entire memory area** is searched.  
 
@@ -50,7 +50,7 @@
 
 ## Download
 
-👉 [Download the latest release here](https://github.com/PyCSharp/HexEditor-For-HHK3/releases)
+[Download the latest release here](https://github.com/PyCSharp/HexEditor-For-HHK3/releases)
 
 The release contains the `.hh3` file you just need to copy onto your calculator.
 
@@ -66,4 +66,4 @@ The release contains the `.hh3` file you just need to copy onto your calculator.
 ## Community
 
 Join the discussion, share feedback and get help on the Snail Math Discord Server:  
-👉 [https://discord.com/invite/knpcNJTzpd](https://discord.com/invite/knpcNJTzpd)  
+[https://discord.com/invite/knpcNJTzpd](https://discord.com/invite/knpcNJTzpd)  
