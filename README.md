@@ -44,7 +44,14 @@
 
    **Range of search:**  
    - If you **set start & end** with `EXP` → only that range is searched.  
-   - If you **do not set any range** → the **entire memory area** is searched.  
+   - If you **do not set any range** → the **entire memory area** is searched.
+
+6. **Read/Write Control Registers**
+   - Click the `More Options` Button
+   - Click on `Read/Write Control Registers`
+   - Navigate using the `↓`/`↑` Buttons
+   - Press `EXE` an type the value you want
+   - Press `EXE` to apply the changes
 
 ---
 
