@@ -17,11 +17,10 @@
 #include <vector>
 #include "MoreOptionsMenu.h"
 
-
 APP_NAME("HexEditor")
 APP_DESCRIPTION("A simple hex editor. Can read and write byte, word and long. github.com/PyCSharp/CPHexEditor-For-HHK3")
 APP_AUTHOR("SnailMath, PyCSharp")
-APP_VERSION("2025.12.24")
+APP_VERSION("2025.12.24");
 
 #define PIXEL(x, y) (vram[(x) + (y) * width])
 #define mem_ch(x) numToAscii[memory[x]]
@@ -177,6 +176,8 @@ void searchForText()
 }
 
 int main() {
+    CheckForDarkmode();
+
     input[0] = '>';
     input[1] = '_';
     input[2] = 0;
@@ -270,7 +271,7 @@ int main() {
                     unsigned int x = (unsigned int) event.data.touch_single.p1_x;
                     unsigned int y = (unsigned int) event.data.touch_single.p1_y;
 
-                    Debug_Printf(46, 2, false, 0, "%3d %3d", x, y);
+                    Debug_Printf(46, 2, isDarkmode, 0, "%3d %3d", x, y);
 
                     if (event.data.touch_single.direction == TOUCH_UP) {
                         if (y >= 494 && y <= 524) {
@@ -428,20 +429,23 @@ int main() {
 }
 
 void initscreen() {
-    fillScreen(color(0, 0, 0));
+    if (isDarkmode)
+        fillScreen(color(0, 0, 0));
+    else 
+        LCD_ClearScreen();
+
     Debug_SetCursorPosition(1, 0);
 
-
-    Debug_PrintString("HexEditor      PyCSharp", true);
-    Debug_Printf(21, 1, true, 0, "github.com/");
-    Debug_Printf(0, 4, true, 0, "   0  1  2  3   4  5  6  7");
+    Debug_PrintString("HexEditor      PyCSharp", isDarkmode);
+    Debug_Printf(21, 1, isDarkmode, 0, "github.com/");
+    Debug_Printf(0, 4, isDarkmode, 0, "   0  1  2  3   4  5  6  7");
     hexdump();
-    Debug_Printf(40, 4, true, 0, "0x%08X", (unsigned int)(uintptr_t)memory);
-    Debug_Printf(40, 6, true, 0, "  <     >  ");
-    Debug_Printf(1, 39, true, 0, "%8s", input);
-    Debug_Printf(9, 40, true, 0, "0x%08X", (unsigned int)(uintptr_t)searchAddr);
-    Debug_Printf(1, 42, true, 0, "Search:   <     >      Goto       Read      Write  ");
-    Debug_Printf(36, 39, true, 0, "More Options");
+    Debug_Printf(40, 4, isDarkmode, 0, "0x%08X", (unsigned int)(uintptr_t)memory);
+    Debug_Printf(40, 6, isDarkmode, 0, "  <     >  ");
+    Debug_Printf(1, 39, isDarkmode, 0, "%8s", input);
+    Debug_Printf(9, 40, isDarkmode, 0, "0x%08X", (unsigned int)(uintptr_t)searchAddr);
+    Debug_Printf(1, 42, isDarkmode, 0, "Search:   <     >      Goto       Read      Write  ");
+    Debug_Printf(36, 39, isDarkmode, 0, "More Options");
     Button(30, 30, 275, 62);
     Button(30, 30, 240, 62);
     Button(30, 30, 55, 494);
@@ -456,14 +460,14 @@ void hexdump() {
     if (!memory) return;
 
     for (int i = 0; i < 16; i++) {
-        Debug_Printf(1, 5 + (2 * i), true, 0,
+        Debug_Printf(1, 5 + (2 * i), isDarkmode, 0,
                      "%X %02X %02X %02X %02X  %02X %02X %02X %02X  %c%c%c%c %c%c%c%c", i,
                      memory[0 + (16 * i)], memory[1 + (16 * i)], memory[2 + (16 * i)], memory[3 + (16 * i)],
                      memory[4 + (16 * i)], memory[5 + (16 * i)], memory[6 + (16 * i)], memory[7 + (16 * i)],
                      mem_ch(0 + (16 * i)), mem_ch(1 + (16 * i)), mem_ch(2 + (16 * i)), mem_ch(3 + (16 * i)),
                      mem_ch(4 + (16 * i)), mem_ch(5 + (16 * i)), mem_ch(6 + (16 * i)), mem_ch(7 + (16 * i)));
 
-        Debug_Printf(1, 6 + (2 * i), true, 0,
+        Debug_Printf(1, 6 + (2 * i), isDarkmode, 0,
                      "  %02X %02X %02X %02X  %02X %02X %02X %02X  %c%c%c%c %c%c%c%c",
                      memory[8 + (16 * i)], memory[9 + (16 * i)], memory[10 + (16 * i)], memory[11 + (16 * i)],
                      memory[12 + (16 * i)], memory[13 + (16 * i)], memory[14 + (16 * i)], memory[15 + (16 * i)],
