@@ -1,12 +1,52 @@
 #include "MoreOptionsMenu.h"
 
 bool selecting = true;
+bool isDarkmode = false;
+
+void CheckForDarkmode() {
+    enum MCS_VariableType type;
+    void* data = nullptr;
+    uint32_t size = 0;
+
+    if (MCS_GetVariable("HexEdit", "IsDark", &type, nullptr, &data, &size) == MCS_OK) { 
+        const char* value = static_cast<const char*>(data);
+        
+        if (value[0] == '1') isDarkmode = true;
+    }
+}
+
+void SetDarkmodePersistent() {
+    const char *folderName = "HexEdit";
+    const char *varName = "IsDark";
+    char data[4] = "1";
+    uint8_t folderIndex;
+
+    if (MCS_CreateFolder(folderName, &folderIndex)) {}
+    if (MCS_SetVariable(folderName, varName, VARTYPE_STR, sizeof(data), data)) {}
+}
+
+void SetLightmodePersistent() {
+    const char *folderName = "HexEdit";
+    const char *varName = "IsDark";
+    char data[4] = "0";
+    uint8_t folderIndex;
+
+    if (MCS_CreateFolder(folderName, &folderIndex)) {}
+    if (MCS_SetVariable(folderName, varName, VARTYPE_STR, sizeof(data), data)) {}
+}
 
 void Button(unsigned int width, unsigned int height, unsigned x, unsigned y) {
-    line(x, y, x + width, y, color(0, 128, 0));
-    line(x, y, x, y + height, color(0, 128, 0));
-    line(x, y + height, x + width, y + height, color(0, 128, 0));
-    line(x + width, y + height, x + width, y, color(0, 128, 0));
+    if (isDarkmode) {
+        line(x, y, x + width, y, color(0, 128, 0));
+        line(x, y, x, y + height, color(0, 128, 0));
+        line(x, y + height, x + width, y + height, color(0, 128, 0));
+        line(x + width, y + height, x + width, y, color(0, 128, 0));
+    } else {
+        line(x, y, x + width, y, color(128, 128, 255));
+        line(x, y, x, y + height, color(128, 128, 255));
+        line(x, y + height, x + width, y + height, color(128, 128, 255));
+        line(x + width, y + height, x + width, y, color(128, 128, 255));
+    }
 }
 
 uint32_t ReadControlRegister(ControlRegister controlRegister) {
@@ -146,7 +186,10 @@ void ReadWriteControlRegisterMenu() {
 
 
     struct Input_Event event;
-    fillScreen(color(0, 0, 0));
+    if (isDarkmode)
+        fillScreen(color(0, 0, 0));
+    else
+        LCD_ClearScreen();
 
     for (int y = 8; y < 8 + markerHeight; y++)
     {
@@ -174,7 +217,10 @@ void ReadWriteControlRegisterMenu() {
                     if (event.data.key.keyCode == KEYCODE_DOWN) {
                         if (y0 < 152) {
 
-                            fillScreen(color(0, 0, 0));
+                            if (isDarkmode)
+                                fillScreen(color(0, 0, 0));
+                            else
+                                LCD_ClearScreen();
 
                             y0 += 24;
                             for (int y = y0; y < y0 + markerHeight; y++)
@@ -189,7 +235,11 @@ void ReadWriteControlRegisterMenu() {
                         }
 
                         else {
-                            fillScreen(color(0, 0, 0));
+                            if (isDarkmode)
+                                fillScreen(color(0, 0, 0));
+                            else
+                                LCD_ClearScreen();
+
                             y0 = 8;
 
                             for (int y = 8; y < 8 + markerHeight; y++)
@@ -209,7 +259,10 @@ void ReadWriteControlRegisterMenu() {
                     else if (event.data.key.keyCode == KEYCODE_UP) {
                         if (y0 > 8) {
 
-                            fillScreen(color(0, 0, 0));
+                            if (isDarkmode)
+                                fillScreen(color(0, 0, 0));
+                            else
+                                LCD_ClearScreen();
 
                             y0 -= 24;
                             for (int y = y0; y < y0 + markerHeight; y++)
@@ -224,7 +277,11 @@ void ReadWriteControlRegisterMenu() {
                         }
 
                         else {
-                            fillScreen(color(0, 0, 0));
+                            if (isDarkmode)
+                                fillScreen(color(0, 0, 0));
+                            else
+                                LCD_ClearScreen();
+
                             y0 = 152;
 
                             for (int y = y0; y < y0 + markerHeight; y++)
@@ -241,10 +298,14 @@ void ReadWriteControlRegisterMenu() {
 
                     else if (event.data.key.keyCode == KEYCODE_EXE) {
                         bool typing = true;
-                        fillScreen(color(0, 0, 0));
+                        if (isDarkmode)
+                            fillScreen(color(0, 0, 0));
+                        else
+                            LCD_ClearScreen();
+
                         LCD_Refresh();
                         Debug_SetCursorPosition(1, 20);
-                        Debug_PrintString(addr, true);
+                        Debug_PrintString(addr, isDarkmode);
                         LCD_Refresh();
                         
 
@@ -262,8 +323,12 @@ void ReadWriteControlRegisterMenu() {
                                             if (addrIndex > 1) {
                                                 addr[--addrIndex] = '\0';
                                                 Debug_SetCursorPosition(1, 20);
-                                                fillScreen(color(0, 0, 0));
-                                                Debug_PrintString(addr, true);
+                                                if (isDarkmode)
+                                                    fillScreen(color(0, 0, 0));
+                                                else
+                                                    LCD_ClearScreen();
+
+                                                Debug_PrintString(addr, isDarkmode);
                                                 LCD_Refresh();
                                             }
                                             continue;
@@ -283,7 +348,10 @@ void ReadWriteControlRegisterMenu() {
                                                 memset(addr, 0, sizeof(addr));
                                                 addrIndex = 1;
                                                 addr[0] = '>';
-                                                fillScreen(color(0, 0, 0));
+                                                if (isDarkmode)
+                                                    fillScreen(color(0, 0, 0));
+                                                else
+                                                    LCD_ClearScreen();
 
                                                 switch (y0) {
                                                     case 8:
@@ -333,7 +401,7 @@ void ReadWriteControlRegisterMenu() {
                                         addr[addrIndex] = '\0';
 
                                         char tmp[2] = { c, '\0' };
-                                        Debug_PrintString(tmp, true);
+                                        Debug_PrintString(tmp, isDarkmode);
                                         LCD_Refresh();
                                     }
 
@@ -355,11 +423,18 @@ void ReadWriteControlRegisterMenu() {
 
                     if (x <= 310 && x >= 10 && y <= 513 && y >= 483) {
                         selecting = false;
-                        fillScreen(color(0, 0, 0));
-                        Button(300, 30, 10, 15);    
-                        Button(300, 30, 10, 483);        
-                        Debug_Printf(16, 41, true, 0, "Go back to Hex Editor");
-                        Debug_Printf(11, 2, true, 0, "Read/Write Control Registers");
+                        if (isDarkmode)
+                            fillScreen(color(0, 0, 0));
+                        else
+                            LCD_ClearScreen();
+
+                        Button(300, 30, 10, 15);
+                        Button(300, 30, 10, 63);  
+                        Button(300, 30, 10, 483);
+                        
+                        Debug_Printf(16, 41, isDarkmode, 0, "Go back to Hex Editor");
+                        Debug_Printf(11, 2, isDarkmode, 0, "Read/Write Control Registers");
+                        Debug_Printf(18, 6, isDarkmode, 0, "Change UI Theme");
                         LCD_Refresh();
                     }
                 }
@@ -369,17 +444,17 @@ void ReadWriteControlRegisterMenu() {
         }
 
         if (selecting) {
-            Debug_Printf(1, 1, true, 0, "VBR: 0x%08lX", vbr);
-            Debug_Printf(1, 3, true, 0, "SSR: 0x%08lX", ssr);
-            Debug_Printf(1, 5, true, 0, "SPC: 0x%08lX", spc);
-            Debug_Printf(1, 7, true, 0, "SGR: 0x%08lX", sgr);
-            Debug_Printf(1, 9, true, 0, "DBR: 0x%08lX", dbr);
-            Debug_Printf(1, 11, true, 0, "GBR: 0x%08lX", gbr);
-            Debug_Printf(1, 13, true, 0, "SR: 0x%08lX", sr);
+            Debug_Printf(1, 1, isDarkmode, 0, "VBR: 0x%08lX", vbr);
+            Debug_Printf(1, 3, isDarkmode, 0, "SSR: 0x%08lX", ssr);
+            Debug_Printf(1, 5, isDarkmode, 0, "SPC: 0x%08lX", spc);
+            Debug_Printf(1, 7, isDarkmode, 0, "SGR: 0x%08lX", sgr);
+            Debug_Printf(1, 9, isDarkmode, 0, "DBR: 0x%08lX", dbr);
+            Debug_Printf(1, 11, isDarkmode, 0, "GBR: 0x%08lX", gbr);
+            Debug_Printf(1, 13, isDarkmode, 0, "SR: 0x%08lX", sr);
 
             Button(300, 30, 10, 483);
 
-            Debug_Printf(12, 41, true, 0, "Go back to More Options Menu");
+            Debug_Printf(12, 41, isDarkmode, 0, "Go back to More Options Menu");
 
             LCD_Refresh();
         }   
@@ -390,11 +465,18 @@ void MoreOptionsMenu() {
     bool inMenu = true;
     struct Input_Event event;
 
-    fillScreen(color(0, 0, 0));
-    Button(300, 30, 10, 15);    
-    Button(300, 30, 10, 483);        
-    Debug_Printf(16, 41, true, 0, "Go back to Hex Editor");
-    Debug_Printf(11, 2, true, 0, "Read/Write Control Registers");
+    if (isDarkmode)
+        fillScreen(color(0, 0, 0));
+    else
+        LCD_ClearScreen();
+
+    Button(300, 30, 10, 15);
+    Button(300, 30, 10, 63);  
+    Button(300, 30, 10, 483);
+     
+    Debug_Printf(16, 41, isDarkmode, 0, "Go back to Hex Editor");
+    Debug_Printf(11, 2, isDarkmode, 0, "Read/Write Control Registers");
+    Debug_Printf(18, 6, isDarkmode, 0, "Change UI Theme");
     LCD_Refresh();
 
     while (inMenu) {
@@ -410,6 +492,13 @@ void MoreOptionsMenu() {
                     if (x <= 310 && x >= 10 && y <= 45 && y >= 15) {
                         selecting = true;
                         ReadWriteControlRegisterMenu();
+                    }
+
+                    else if (x <= 310 && x >= 10 && y <= 93 && y >= 63) {
+                        if (isDarkmode) SetLightmodePersistent();
+                        else SetDarkmodePersistent();
+
+                        isDarkmode = !isDarkmode;
                     }
 
                     else if (x <= 310 && x >= 10 && y <= 513 && y >= 483) {
