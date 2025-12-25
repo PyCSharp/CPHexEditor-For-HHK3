@@ -52,7 +52,11 @@
    - Navigate using the `↓`/`↑` Buttons
    - Press `EXE` an type the value you want
    - Press `EXE` to apply the changes
-
+  
+7. **Change UI Theme**
+   - Click the `More Options` Button
+   - Click on `Change UI Theme`
+   - The UI does not Update instantly, you have to click a UI Button to apply the changes
 ---
 
 ## Download
