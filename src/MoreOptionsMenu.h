@@ -3,10 +3,13 @@
 #include <sdk/os/input.h>
 #include <sdk/os/lcd.h>
 #include <sdk/calc/calc.h>
+#include <sdk/os/mcs.h>
 #include <cstdlib>
 #include <cstring>
 
 extern bool selecting;
+extern bool isDarkmode;
+
 enum class ControlRegister {
     VBR,
     SSR,
@@ -19,4 +22,7 @@ enum class ControlRegister {
 
 void MoreOptionsMenu();
 void ReadWriteControlRegisterMenu();
+void CheckForDarkmode();
+void SetDarkmodePersistent();
+void SetLightmodePersistent();
 void Button(unsigned int width, unsigned int height, unsigned x, unsigned y);
