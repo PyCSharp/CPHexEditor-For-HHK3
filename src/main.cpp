@@ -20,7 +20,7 @@
 APP_NAME("HexEditor")
 APP_DESCRIPTION("A simple hex editor. Can read and write byte, word and long. github.com/PyCSharp/CPHexEditor-For-HHK3")
 APP_AUTHOR("SnailMath, PyCSharp")
-APP_VERSION("2025.12.24");
+APP_VERSION("2025.12.25");
 
 #define PIXEL(x, y) (vram[(x) + (y) * width])
 #define mem_ch(x) numToAscii[memory[x]]
